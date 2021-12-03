@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 /* fs.readFile('./assets/dudu.jpg', (erro, buffer) => {
     console.log('imagem foi bufferizada');
@@ -9,6 +10,10 @@ const fs = require('fs');
     });
 }); */
 
-fs.createReadStream('./assets/dudu.jpg')
-    .pipe(fs.createWriteStream('./assets/dudu-stream.jpg'))
-    .on('finish', () => console.log('Imagem do Dudu gravada com sucesso'));
+module.exports = (caminho, nomeDoArquivo, callbackImagemCriada) => {
+    const tipo = path.extname(caminho);
+    const novoCaminho = `./assets/imagens/pets/${nomeDoArquivo}${tipo}`;
+    fs.createReadStream(caminho)
+        .pipe(fs.createWriteStream(novoCaminho))
+        .on('finish', () => callbackImagemCriada(novoCaminho));
+}
