@@ -11,9 +11,20 @@ const path = require('path');
 }); */
 
 module.exports = (caminho, nomeDoArquivo, callbackImagemCriada) => {
+    const tiposValidos = ['jpg', 'png', 'jpeg', 'webp'];
     const tipo = path.extname(caminho);
-    const novoCaminho = `./assets/imagens/pets/${nomeDoArquivo}${tipo}`;
-    fs.createReadStream(caminho)
-        .pipe(fs.createWriteStream(novoCaminho))
-        .on('finish', () => callbackImagemCriada(novoCaminho));
+
+    //corta fora o . antes do tipo do arquivo
+    const tipoEhValido = tiposValidos.indexOf(tipo.substring(1)) !== -1;
+
+    if (tipoEhValido) {
+        const novoCaminho = `./assets/imagens/pets/${nomeDoArquivo}${tipo}`;
+        fs.createReadStream(caminho)
+            .pipe(fs.createWriteStream(novoCaminho))
+            .on('finish', () => callbackImagemCriada(false, novoCaminho));
+    } else {
+        const erro = "Tipo é inválido!"
+        console.log('Erro! Tipo inválido');
+        callbackImagemCriada(erro);
+    }
 }
